@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JF+ unlock: what a client sees</title>
+<meta name="description" content="JF Coach mock-up: the one-time Welcome to JF+ moment, the unlocked secret challenge and the gold JF+ mark. Fixture data only.">
+<style>
+  :root {
+    --ink: #222326; --ink2: rgba(31,32,37,.60); --ink3: rgba(31,32,37,.38); --cap: #8A8F99;
+    --canvas: #F5F7FB; --card: #EBF0F8; --tile: #FFFFFF; --dark: #1F2025; --line: #ECEEF2;
+    --gold: #E09A12; --green: #8BD42A; --ease: cubic-bezier(.2,.7,.2,1);
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: #fff; color: var(--ink); font: 500 17px/1.45 Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; }
+  .wrap { max-width: 1380px; margin: 0 auto; padding: 0 30px; }
+  header { padding: 96px 0 40px; text-align: center; }
+  h1 { margin: 0; font-size: clamp(42px, 7vw, 80px); font-weight: 650; line-height: 1.0; letter-spacing: -0.03em; }
+  h1 .plus { background: linear-gradient(180deg, #f7be2d, #e09a12 55%, #b97406); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .sub { margin: 18px auto 0; max-width: 640px; font-size: clamp(18px, 2vw, 24px); line-height: 1.3; color: var(--ink2); }
+  .fixture { margin: 14px 0 0; font-size: 14px; color: var(--cap); }
+
+  section.step { padding: 64px 0 24px; }
+  .step-head { display: grid; grid-template-columns: 56px 1fr; gap: 6px 18px; align-items: baseline; max-width: 880px; margin: 0 auto 28px; }
+  .step-n { font-size: 44px; font-weight: 700; letter-spacing: -0.04em; color: var(--ink3); line-height: 1; }
+  .step-t { margin: 0; font-size: clamp(28px, 3.4vw, 40px); font-weight: 650; letter-spacing: -0.03em; line-height: 1.05; }
+  .step-s { grid-column: 2; margin: 0; font-size: 18px; color: var(--ink2); max-width: 680px; }
+
+  .row { display: flex; gap: 34px; justify-content: center; flex-wrap: wrap; }
+  @media (max-width: 760px) {
+    .row { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 30px 18px; margin: 0 -30px; -webkit-overflow-scrolling: touch; }
+    .row > figure { scroll-snap-align: center; }
+  }
+  figure { margin: 0; flex: 0 0 auto; width: 300px; }
+  .phone { position: relative; width: 300px; height: 649px; border-radius: 46px; padding: 9px; background: #111214;
+    box-shadow: 0 0 0 1.5px #3a3c42 inset, 0 30px 60px -28px rgba(30,40,70,.55), 0 16px 40px -18px rgba(30,40,70,.35); }
+  .phone img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; border-radius: 38px; background: var(--canvas); }
+  .phone::after { content: ""; position: absolute; top: 18px; left: 50%; width: 92px; height: 26px; margin-left: -46px; border-radius: 20px; background: #111214; }
+  figcaption { margin-top: 16px; padding: 0 6px; }
+  figcaption b { display: block; font-size: 17px; font-weight: 650; letter-spacing: -0.01em; }
+  figcaption span { display: block; margin-top: 3px; font-size: 15px; line-height: 1.4; color: var(--ink2); }
+  figcaption .mark { display: inline; margin: 0; font-size: inherit; }
+  .arrow { align-self: center; flex: 0 0 auto; color: var(--ink3); }
+  @media (max-width: 760px) { .arrow { display: none; } }
+
+  .notes { margin: 80px auto 0; max-width: 1100px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+  .note { background: var(--canvas); border-radius: 24px; padding: 26px 28px; }
+  .note h3 { margin: 0 0 8px; font-size: 20px; font-weight: 650; letter-spacing: -0.02em; }
+  .note p, .note li { margin: 0; font-size: 16px; color: var(--ink2); }
+  .note ul { margin: 0; padding-left: 18px; }
+  .note li + li { margin-top: 6px; }
+  .note code { font: 600 14px/1 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--ink); }
+  .mark { font-weight: 800; letter-spacing: -0.02em; background: linear-gradient(180deg, #f7be2d, #e09a12 55%, #b97406); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+  .dark-band { margin-top: 96px; background: var(--dark); color: #fff; padding: 72px 0 90px; }
+  .dark-band .step-n { color: rgba(255,255,255,.3); }
+  .dark-band .step-s, .dark-band figcaption span { color: rgba(255,255,255,.55); }
+  footer { padding: 48px 0 80px; text-align: center; font-size: 14px; color: var(--cap); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal { opacity: 0; transform: translateY(28px); filter: blur(8px); transition: opacity 1s var(--ease), transform 1s var(--ease), filter 1s var(--ease); }
+    .reveal.in { opacity: 1; transform: none; filter: none; }
+  }
+</style>
+</head>
+<body>
+<header class="wrap">
+  <h1>When a client<br>gets <span class="plus">JF+</span></h1>
+  <p class="sub">One proper welcome the first time the app sees it, the secret challenge it opened, and a gold mark that stays.</p>
+  <p class="fixture">Real screenshots from the JF Coach app at iPhone size (390 × 844), rendered locally on fixture data. "Alex Sample" is a test identity, not a client.</p>
+</header>
+
+<main>
+  <section class="step wrap reveal">
+    <div class="step-head">
+      <span class="step-n">1</span>
+      <h2 class="step-t">Before: playing without JF+</h2>
+      <p class="step-s">Prizes say JF+ is needed, the Prizes card offers See JF+, and the JF+ page is the $5 a week pitch.</p>
+    </div>
+    <div class="row">
+      <figure><div class="phone"><img src="shots/a1-challenge-before.webp" alt="Challenge tab before JF+: Level 4, Prizes says JF+ needed to win" loading="lazy"></div>
+        <figcaption><b>Challenge home</b><span>No mark beside the level. Prizes: "JF+, Needed to win".</span></figcaption></figure>
+      <figure><div class="phone"><img src="shots/a4-prizes-before.webp" alt="Prizes card before JF+ with a See JF+ button" loading="lazy"></div>
+        <figcaption><b>Prizes card</b><span>"For a prize, you still need JF+." with See JF+.</span></figcaption></figure>
+      <figure><div class="phone"><img src="shots/a2-jfplus-pitch.webp" alt="The JF+ sales page: In it to win it, $5 a week" loading="lazy"></div>
+        <figcaption><b>The JF+ page</b><span>Unchanged for non-members: the lavender pitch, $5 a week.</span></figcaption></figure>
+    </div>
+  </section>
+
+  <section class="step wrap reveal">
+    <div class="step-head">
+      <span class="step-n">2</span>
+      <h2 class="step-t">The moment it's on: "You're on JF+"</h2>
+      <p class="step-s">Shows once, on Home or the Challenge tab, the next time they open the app. Staff switch-on, a payment while the app was closed, or someone already on JF+ who never saw it: all the same.</p>
+    </div>
+    <div class="row">
+      <figure><div class="phone"><img src="shots/b1-welcome-landing.webp" alt="Welcome to JF+ landing with confetti around a gold JF+ mark" loading="lazy"></div>
+        <figcaption><b>It lands</b><span>The JF+ mark drops in gold with one confetti burst. Reduced motion: nothing moves.</span></figcaption></figure>
+      <svg class="arrow" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      <figure><div class="phone"><img src="shots/b2-welcome.webp" alt="Welcome to JF+ settled: five unlocks, Play Your Secret Challenge and Done" loading="lazy"></div>
+        <figcaption><b>What just unlocked</b><span>Five ticks, the secret it opened, one button to it, Done, and the small circle X.</span></figcaption></figure>
+    </div>
+  </section>
+
+  <section class="step wrap reveal">
+    <div class="step-head">
+      <span class="step-n">3</span>
+      <h2 class="step-t">Straight into the secret challenge</h2>
+      <p class="step-s">"Play Your Secret Challenge" opens this week's secret ready to log. No JF+ wall, the +200 JF points are live.</p>
+    </div>
+    <div class="row">
+      <figure><div class="phone"><img src="shots/c1-secret-after.webp" alt="This week's secret challenge, Every meal matters, open and ready to log" loading="lazy"></div>
+        <figcaption><b>Every meal matters</b><span>/m/challenge/weekly?secret=meal-streak, unlocked, +200 JF points.</span></figcaption></figure>
+      <figure><div class="phone"><img src="shots/e1-welcome-locked-reduced-motion.webp" alt="Welcome variant when the secret still needs habits" loading="lazy"></div>
+        <figcaption><b>If habits are still to do</b><span>The line says what's left and the button reads See Your Secret Challenge.</span></figcaption></figure>
+      <figure><div class="phone"><img src="shots/e2-secret-locked-destination.webp" alt="The secret challenge screen explaining 2 more habits to unlock" loading="lazy"></div>
+        <figcaption><b>Where that lands</b><span>Its own screen, in the server's words: 2 more habits today.</span></figcaption></figure>
+    </div>
+  </section>
+
+  <section class="step wrap reveal">
+    <div class="step-head">
+      <span class="step-n">4</span>
+      <h2 class="step-t">After: the gold <span class="mark">JF+</span> stays</h2>
+      <p class="step-s">A gold wordmark beside their level and their name. Text only: no pill, no badge, no dot. Prizes now say they're entered.</p>
+    </div>
+    <div class="row">
+      <figure><div class="phone"><img src="shots/d1-challenge-after.webp" alt="Challenge tab after JF+: Level 4 JF+, Prizes Ready" loading="lazy"></div>
+        <figcaption><b>Challenge home</b><span>"Level 4 <span class="mark">JF+</span>", Prizes "Ready, You're entered".</span></figcaption></figure>
+      <figure><div class="phone"><img src="shots/d2-more-after.webp" alt="More tab with the JF+ mark after the name" loading="lazy"></div>
+        <figcaption><b>More</b><span>"Alex Sample <span class="mark">JF+</span>" on the profile row.</span></figcaption></figure>
+      <figure><div class="phone"><img src="shots/d3-settings-after.webp" alt="Settings header with the JF+ mark after the name" loading="lazy"></div>
+        <figcaption><b>Settings</b><span>The same mark under the photo.</span></figcaption></figure>
+      <figure><div class="phone"><img src="shots/d5-prizes-after.webp" alt="Prizes card after JF+: You're entered for the prizes" loading="lazy"></div>
+        <figcaption><b>Prizes card</b><span>"You're entered for the prizes." No See JF+.</span></figcaption></figure>
+      <figure><div class="phone"><img src="shots/d4-jfplus-member.webp" alt="The JF+ page opened by a member: You're a JF+ member, You are on JF+" loading="lazy"></div>
+        <figcaption><b>JF+ page, as a member</b><span>"You're a JF+ member", every perk is theirs, no price or sign-up.</span></figcaption></figure>
+    </div>
+  </section>
+
+  <section class="dark-band reveal">
+    <div class="wrap">
+      <div class="step-head">
+        <span class="step-n">+</span>
+        <h2 class="step-t">At night too</h2>
+        <p class="step-s">Dark Mode keeps the gold and drops the light rays.</p>
+      </div>
+      <div class="row">
+        <figure><div class="phone"><img src="shots/f1-welcome-dark.webp" alt="Welcome to JF+ in Dark Mode" loading="lazy"></div>
+          <figcaption><b>Welcome, dark</b><span>Same moment, same button.</span></figcaption></figure>
+        <figure><div class="phone"><img src="shots/f2-challenge-dark.webp" alt="Challenge tab in Dark Mode with the JF+ mark" loading="lazy"></div>
+          <figcaption><b>Challenge home, dark</b><span>The mark brightens to hold on the dark cell.</span></figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="notes">
+      <div class="note reveal">
+        <h3>Once, on every phone</h3>
+        <p>Marked the moment it shows, on the device and on the server's one-time notice ledger (<code>jfplus-welcome-v1</code>), so a second phone never shows it again.</p>
+      </div>
+      <div class="note reveal">
+        <h3>Never in the way</h3>
+        <ul>
+          <li>Never in trainer preview, for staff or the demo account.</li>
+          <li>Never over the setup, tour, streak, chest or any other pop-up.</li>
+          <li>The prizes pop-up and Pick Your Path wait for it, and it waits for them.</li>
+        </ul>
+      </div>
+      <div class="note reveal">
+        <h3>Where the button goes</h3>
+        <ul>
+          <li>This week's secret, ready to log.</li>
+          <li>Else a map find that was waiting on JF+.</li>
+          <li>Else the secret's own screen with the habits left.</li>
+          <li>Else the Challenge tab.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="wrap">Branch feat/jfplus-welcome-1004 · not deployed · 4 October 2026</footer>
+
+<script>
+  (function () {
+    var els = document.querySelectorAll(".reveal");
+    if (!("IntersectionObserver" in window)) { els.forEach(function (e) { e.classList.add("in"); }); return; }
+    var io = new IntersectionObserver(function (entries) { entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } }); }, { rootMargin: "0px 0px -8% 0px" });
+    els.forEach(function (e) { io.observe(e); });
+  })();
+</script>
+</body>
+</html>
